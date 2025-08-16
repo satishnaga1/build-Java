@@ -11,28 +11,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    # 1. Checkout the code from your repo
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
+    # 2. Setup Java Development Kit (JDK 11)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '11'
-
+     # 3. Build the WAR file using Maven
       - name: Build WAR with Maven
         run: mvn clean package
-
+    # 4. Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
+   # 5. Build Image.
       - name: Build Docker Image
         run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }} .
-
+   #6. Push Image to Docker
       - name: Push Docker Image
         run: docker push rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }}
