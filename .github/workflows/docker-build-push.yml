@@ -1,16 +1,17 @@
 name: Build and Push WAR Docker
 
 on:
-  # Allows manual triggering with a folder name prompt
   workflow_dispatch:
     inputs:
       tag_name:
         description: "Enter tag name"
         required: true
         default: "latest"
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -23,18 +24,15 @@ jobs:
 
       - name: Build WAR with Maven
         run: mvn clean package
+
       - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build Docker Image
-        run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }}
 
-        #- name: Build Docker image
-        # Uses the folder name input to locate the Dockerfile
-        #run: docker build -t  rajeshnimmana/dockerbuild -f ${{ github.event.inputs.dockerfile_folder }}/Dockerfile ${{ github.event.inputs.dockerfile_folder }}
-       # run: docker build -t rajeshnimmana/dockerbuild
+      - name: Build Docker Image
+        run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }} .
 
       - name: Push Docker Image
         run: docker push rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }}
