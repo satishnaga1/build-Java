@@ -1,9 +1,13 @@
 name: Build and Push WAR Docker
 
 on:
-  push:
-    branches: [main]
-
+  # Allows manual triggering with a folder name prompt
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag'
+        required: false
+        default: 'latest
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,7 +29,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/tomcat-sample:latest .
+        run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }}
 
         #- name: Build Docker image
         # Uses the folder name input to locate the Dockerfile
@@ -33,4 +37,4 @@ jobs:
        # run: docker build -t rajeshnimmana/dockerbuild
 
       - name: Push Docker Image
-        run: docker push rajeshnimmana/dockerbuild/tomcat-sample:latest
+        run: docker push rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }}
