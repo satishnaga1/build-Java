@@ -30,7 +30,7 @@ jobs:
         #- name: Build Docker image
         # Uses the folder name input to locate the Dockerfile
         #run: docker build -t  rajeshnimmana/dockerbuild -f ${{ github.event.inputs.dockerfile_folder }}/Dockerfile ${{ github.event.inputs.dockerfile_folder }}
-       # run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }} -f ${{ github.event.inputs.dockerfile_folder }}/Dockerfile ${{ github.event.inputs.dockerfile_folder }}
+       # run: docker build -t rajeshnimmana/dockerbuild
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/tomcat-sample:latet
+        run: docker push -t ${{ secrets.DOCKER_USERNAME }}/tomcat-sample:latest
