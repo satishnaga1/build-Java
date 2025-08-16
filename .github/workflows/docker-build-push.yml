@@ -33,4 +33,4 @@ jobs:
        # run: docker build -t rajeshnimmana/dockerbuild:${{ github.event.inputs.tag_name }} -f ${{ github.event.inputs.dockerfile_folder }}/Dockerfile ${{ github.event.inputs.dockerfile_folder }}
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/tomcat-sample:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/tomcat-sample:latet
