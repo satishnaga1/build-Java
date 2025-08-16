@@ -4,10 +4,10 @@ on:
   # Allows manual triggering with a folder name prompt
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Docker image tag'
-        required: false
-        default: 'latest
+      tag_name:
+        description: "Enter tag name"
+        required: true
+        default: "latest"
 jobs:
   build:
     runs-on: ubuntu-latest
