@@ -1,12 +1,10 @@
 name: Build and Push WAR Docker
-
 on:
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        description: "Enter tag name"
-        required: true
-        default: "latest"
+  push:
+    branches:
+      - master
+    paths:
+      - '**/*'
 
 jobs:
   build:
