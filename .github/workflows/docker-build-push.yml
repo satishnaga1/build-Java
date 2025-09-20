@@ -48,8 +48,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build . -t rajeshnimmana/dockerbuild:${{ env.VERSION }} 
-      
-      # Push the Docker Image
+     #Push the image to Docker hub 
       - name: Push Docker Image
         run: |
-          docker build . -t rajeshnimmana/dockerbuild:${{ env.VERSION }}
+          docker push rajeshnimmana/dockerbuild:${{ env.VERSION }}
