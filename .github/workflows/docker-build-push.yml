@@ -2,7 +2,7 @@ name: Build and Push WAR Docker
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '**/*'
 
