@@ -1,4 +1,4 @@
-name: Build and Push WAR Docker
+name: Test and Build
 on:
   push:
     branches:
@@ -53,6 +53,3 @@ jobs:
       - name: Push Docker Image
         run: |
           docker build . -t rajeshnimmana/dockerbuild:${{ env.VERSION }}
-      
-    
-
