@@ -9,7 +9,7 @@ on:
         type: choice
         options:
           - dev
-          - prod
+          - Prod
 jobs:
   build:
     runs-on: ubuntu-latest
