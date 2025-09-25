@@ -58,7 +58,7 @@ jobs:
   # Update deployment image tag in manifest
       - name: Update deployment image tag
         run: |
-          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/path/to/deployment.yaml
+          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/dev/deployment.yaml
 
       # Commit and push updated manifest
       - name: Commit and push deployment update
