@@ -11,7 +11,7 @@ COPY . .
 RUN pip install -r requirements.txt
 
 #Expose the port
-EXPOSE 5000
+#EXPOSE 5000
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
