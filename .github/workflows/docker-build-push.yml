@@ -58,7 +58,7 @@ jobs:
   # Update deployment image tag in manifest
       - name: Update deployment image tag
         run: |
-          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/dev/deployment.yaml
+          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/dev/deploy.yaml
 
       # Commit and push updated manifest
       - name: Commit and push deployment update
@@ -66,7 +66,7 @@ jobs:
           cd argocd-example-apps
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add path/to/deployment.yaml
+          git add dev/deploy.yaml
           git commit -m "Update image tag to ${{ env.VERSION }}"
           git push
         env:
