@@ -53,8 +53,8 @@ jobs:
         run: |
           docker push rajeshnimmana/dockerbuild:${{ env.VERSION }}
     ## Clone ArgoCD example repo
-     - name: Clone ArgoCD example repo
-       run: git clone https://github.com/satishnaga1/argocd-example-apps.git
+      - name: Clone ArgoCD example repo
+        run: git clone https://github.com/satishnaga1/argocd-example-apps.git
   # Update deployment image tag in manifest
       - name: Update deployment image tag
         run: |
