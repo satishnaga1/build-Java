@@ -52,3 +52,22 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push rajeshnimmana/dockerbuild:${{ env.VERSION }}
+    ## Clone ArgoCD example repo
+     - name: Clone ArgoCD example repo
+       run: git clone https://github.com/satishnaga1/argocd-example-apps.git
+  # Update deployment image tag in manifest
+      - name: Update deployment image tag
+        run: |
+          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/path/to/deployment.yaml
+
+      # Commit and push updated manifest
+      - name: Commit and push deployment update
+        run: |
+          cd argocd-example-apps
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add path/to/deployment.yaml
+          git commit -m "Update image tag to ${{ env.VERSION }}"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
