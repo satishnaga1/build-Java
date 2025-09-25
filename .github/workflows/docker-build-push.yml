@@ -1,11 +1,15 @@
 name: Test and Build
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/*'
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -63,7 +67,7 @@ jobs:
   # Update deployment image tag in manifest
       - name: Update deployment image tag
         run: |
-          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/dev/deploy.yaml
+          sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/${{ env.ENVIRONMENT }}/deploy.yaml
 
       # Commit and push updated manifest
       - name: Commit and push deployment update
@@ -72,8 +76,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
-          git add dev/deploy.yaml
-          git commit -m "Update image tag to ${{ env.VERSION }}"
+          git add ${{ env.ENVIRONMENT }}/deploy.yaml
+          git commit -m "Deploy to ${{ env.ENVIRONMENT }} with image ${{ env.VERSION }}"
           git push
         env:
           TOKEN: ${{ secrets.TOKEN }}
