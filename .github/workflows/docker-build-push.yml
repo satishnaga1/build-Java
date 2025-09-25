@@ -55,10 +55,10 @@ jobs:
     ## Clone ArgoCD example repo
       - name: Clone ArgoCD example repo
         env:
-           GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN  }}
+           TOKEN : ${{ secrets.TOKEN  }}
 
         run: |
-           git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+           git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
 
   # Update deployment image tag in manifest
       - name: Update deployment image tag
@@ -71,9 +71,9 @@ jobs:
           cd argocd-example-apps
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+          git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
           git add dev/deploy.yaml
           git commit -m "Update image tag to ${{ env.VERSION }}"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.TOKEN }}
