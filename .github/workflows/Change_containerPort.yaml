@@ -1,0 +1,49 @@
+name: Replicas
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - Prod
+      containerPort:
+        description: 'new containerPort no'
+        required: true
+        default: '8081'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+       ENVIRONMENT: ${{ github.event.inputs.environment }}
+       ContainerPort: ${{ github.event.inputs.containerPort }}
+    steps:
+    ## Clone ArgoCD example repo
+      - name: Clone ArgoCD example repo
+        env:
+           TOKEN : ${{ secrets.TOKEN  }}
+
+        run: |
+           git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+
+  # Change ContainerPort in deployment manifest
+      - name: ContainerPort in deployment manifest
+        run: |
+          #sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/${{ env.ENVIRONMENT }}/deploy.yaml
+           sed -i "s/containerPort: [0-9]\+/containerPort: $ContainerPort/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
+
+      # Commit and push updated manifest
+      - name: Commit and push deployment update
+        run: |
+          cd argocd-example-apps
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+          git add ${{ env.ENVIRONMENT }}/deploy.yaml
+          git commit -m "Change containerPort to $ContainerPort in $ENVIRONMENT"
+          git push
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
