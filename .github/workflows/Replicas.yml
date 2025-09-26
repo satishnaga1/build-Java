@@ -1,4 +1,4 @@
-name: Test and Build
+name: Replicas
 on:
   workflow_dispatch:
     inputs:
