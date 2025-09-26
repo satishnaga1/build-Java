@@ -1,0 +1,49 @@
+name: Test and Build
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - Prod
+      replicas:
+        description: 'Number of replicas'
+        required: true
+        default: '2'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+       ENVIRONMENT: ${{ github.event.inputs.environment }}
+       REPLICAS: ${{ github.event.inputs.replicas }}
+    steps:
+    ## Clone ArgoCD example repo
+      - name: Clone ArgoCD example repo
+        env:
+           TOKEN : ${{ secrets.TOKEN  }}
+
+        run: |
+           git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+
+  # Update replicas in deployment manifest
+      - name: replicas in deployment manifest
+        run: |
+          #sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/${{ env.ENVIRONMENT }}/deploy.yaml
+           sed -i "s/replicas: [0-9]\+/replicas: $REPLICAS/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
+
+      # Commit and push updated manifest
+      - name: Commit and push deployment update
+        run: |
+          cd argocd-example-apps
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
+          git add ${{ env.ENVIRONMENT }}/deploy.yaml
+          git commit -m "Update replicas to $REPLICAS in $ENVIRONMENT"
+          git push
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
