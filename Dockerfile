@@ -1,19 +1,21 @@
-#use stable python image
+# Use stable UBI8 base image
 FROM registry.access.redhat.com/ubi8/ubi
-# Add any needed tools or dependencies here
-RUN dnf install -y python3 python3-pip && dnf
 
-# Set the working directory
+# Install Python 3 and pip
+RUN dnf install -y python3 python3-pip && \
+    dnf clean all
+
+# Set working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . . 
+# Copy local files to the container
+COPY . .
 
-# Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-#Expose the port
-#EXPOSE 5000
+# Expose port (uncomment if needed)
+# EXPOSE 5000
 
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+# Run the app
+CMD ["python3", "app.py"]
