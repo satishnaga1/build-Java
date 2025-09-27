@@ -12,11 +12,11 @@ on:
           - Prod
       containerPort:
         description: 'Change containerPort in deployment'
-        required: true
+        required: false
         default: '8081'
       NODEPORT:
         description: 'Change nodePort in service'
-        required: true
+        required: false
         default: '30009'
       
 jobs:
