@@ -10,22 +10,25 @@ on:
         options:
           - dev
           - Prod
-      containerPort:
-        description: 'Change containerPort in deployment'
-        required: false
-        default: '8081'
-      nodePort:
-        description: 'Change nodePort in service'
-        required: false
+      portType:
+        description: 'Which port to update? (containerPort or nodePort)'
+        required: true
+        type: choice
+        options:
+          - containerPort
+          - nodePort
+      portValue:
+        description: 'New port value'
+        required: true
         default: '30009'
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
        ENVIRONMENT: ${{ github.event.inputs.environment }}
-       ContainerPort: ${{ github.event.inputs.containerPort }}
-       NODEPORT : ${{ github.event.inputs.nodePort }}
+       PORT_TYPE: ${{ github.event.inputs.portType }}
+       PORT_VALUE: ${{ github.event.inputs.portValue }}
     steps:
     ## Clone ArgoCD example repo
       - name: Clone ArgoCD example repo
@@ -36,15 +39,19 @@ jobs:
            git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
 
   # Change ContainerPort in deployment manifest
-      - name: ContainerPort in deployment manifest
+      - name: Update port based on selection
         run: |
-           sed -i "s/containerPort: [0-9]\+/containerPort: $ContainerPort/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
-           ## Change nodePort in service YAML (optional, only if applicable)
-           sed -i "s/nodePort: [0-9]\+/nodePort: $NODEPORT/" argocd-example-apps/$ENVIRONMENT/svc.yaml
-          #This command replaces the existing nodePort value in the service.yaml file with a new one stored in the $NODEPORT variable.
-          # "s/.../.../" This is a substitute command:
-          # s/OLD/NEW/It searches for a pattern (OLD) and replaces it with (NEW).
-          # [0-9]\+ → matches one or more digits (like 30009, 32000, etc.).
+          if [ "$PORT_TYPE" = "containerPort" ]; then
+            echo "Updating containerPort to $PORT_VALUE"
+            sed -i "s/containerPort: [0-9]\+/containerPort: $PORT_VALUE/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
+          elif [ "$PORT_TYPE" = "nodePort" ]; then
+            echo "Updating nodePort to $PORT_VALUE"
+            sed -i "s/nodePort: [0-9]\+/nodePort: $PORT_VALUE/" argocd-example-apps/$ENVIRONMENT/svc.yaml
+          else
+            echo "Invalid port"
+            exit 1
+          fi
+
       # Commit and push updated manifest
       - name: Commit and push deployment update
         run: |
@@ -52,8 +59,14 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
-          git add ${{ env.ENVIRONMENT }}/deploy.yaml ${{ env.ENVIRONMENT}}/svc.yaml
-          git commit -m "Change containerPort to $ContainerPort and nodePort to $NODEPORT in $ENVIRONMENT"
+          if [ "$PORT_TYPE" = "containerPort" ]; then
+            git add $ENVIRONMENT/deploy.yaml
+            git commit -m "Update containerPort to $PORT_VALUE in $ENVIRONMENT"
+          else
+            git add $ENVIRONMENT/svc.yaml
+            git commit -m "Update nodePort to $PORT_VALUE in $ENVIRONMENT"
+          fi
           git push
+
         env:
           TOKEN: ${{ secrets.TOKEN }}
