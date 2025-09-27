@@ -14,7 +14,7 @@ on:
         description: 'Change containerPort in deployment'
         required: false
         default: '8081'
-      NODEPORT:
+      nodePort:
         description: 'Change nodePort in service'
         required: false
         default: '30009'
@@ -25,7 +25,7 @@ jobs:
     env:
        ENVIRONMENT: ${{ github.event.inputs.environment }}
        ContainerPort: ${{ github.event.inputs.containerPort }}
-       NODEPORT : ${{ github.event.inputs.NODEPORT }}
+       NODEPORT : ${{ github.event.inputs.nodePort }}
     steps:
     ## Clone ArgoCD example repo
       - name: Clone ArgoCD example repo
@@ -40,7 +40,7 @@ jobs:
         run: |
            sed -i "s/containerPort: [0-9]\+/containerPort: $ContainerPort/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
            ## Change nodePort in service YAML (optional, only if applicable)
-           sed -i "sed -i "s/nodePort: [0-9]\+/nodePort: $NODEPORT/" argocd-example-apps/$ENVIRONMENT/service.yaml
+           sed -i "s/nodePort: [0-9]\+/nodePort: $NODEPORT/" argocd-example-apps/$ENVIRONMENT/service.yaml
           #This command replaces the existing nodePort value in the service.yaml file with a new one stored in the $NODEPORT variable.
           # "s/.../.../" This is a substitute command:
           # s/OLD/NEW/It searches for a pattern (OLD) and replaces it with (NEW).
