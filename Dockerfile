@@ -1,5 +1,7 @@
 #use stable python image
-FROM python:3.11-slim
+FROM FROM registry.access.redhat.com/ubi8/ubi
+# Add any needed tools or dependencies here
+RUN dnf install -y python3
 
 # Set the working directory
 WORKDIR /app
