@@ -50,5 +50,5 @@ The `argocd-example-apps` repo is expected to have this structure:
     echo "VERSION=$VERSION" >> $GITHUB_ENV
 ## This step generates a unique Docker image tag using the current date and time, and makes that tag available to the rest of the workflow via the VERSION environment variable.
 🔍 Line-by-Line Breakdown:
-# VERSION=vWeatherapp$(date +"%Y%m%d%H%M%S")
-# Creates a variable called VERSION
+## VERSION=vWeatherapp$(date +"%Y%m%d%H%M%S")
+## Creates a variable called VERSION
