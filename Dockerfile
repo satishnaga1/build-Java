@@ -22,7 +22,7 @@ COPY . .
 
 # Install Python dependencies
 RUN pip3 install --upgrade pip setuptools wheel
-RUN pip3 install --no-cache-dir -r requirements.txt
+# RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Expose port (optional)
 # EXPOSE 5000
