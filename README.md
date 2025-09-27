@@ -6,7 +6,7 @@
 
 This repository contains a GitHub Actions workflow that lints code, builds a Docker image, and updates a Kubernetes manifest in an ArgoCD-managed repo.
 
-## 📂 Workflow: `Test and Build`
+## 📂 Workflow: `Build and Test`
 
 ### 🔧 Trigger Type
 
@@ -41,3 +41,14 @@ This workflow is manually triggered using the `workflow_dispatch` event.
 
 The `argocd-example-apps` repo is expected to have this structure:
 
+## let’s break down this step from your GitHub Actions workflow:
+
+- name: Docker tag
+  id: version
+  run: |
+    VERSION=vWeatherapp$(date +"%Y%m%d%H%M%S")
+    echo "VERSION=$VERSION" >> $GITHUB_ENV
+## This step generates a unique Docker image tag using the current date and time, and makes that tag available to the rest of the workflow via the VERSION environment variable.
+🔍 Line-by-Line Breakdown:
+# VERSION=vWeatherapp$(date +"%Y%m%d%H%M%S")
+# Creates a variable called VERSION
