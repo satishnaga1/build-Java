@@ -11,15 +11,21 @@ on:
           - dev
           - Prod
       containerPort:
-        description: 'new containerPort no'
+        description: 'Change containerPort in deployment'
         required: true
         default: '8081'
+      NODEPORT:
+        description: 'Change nodePort in service'
+        required: true
+        default: '30009'
+      
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
        ENVIRONMENT: ${{ github.event.inputs.environment }}
        ContainerPort: ${{ github.event.inputs.containerPort }}
+       NODEPORT : ${{ github.event.inputs.NODEPORT }}
     steps:
     ## Clone ArgoCD example repo
       - name: Clone ArgoCD example repo
@@ -32,9 +38,13 @@ jobs:
   # Change ContainerPort in deployment manifest
       - name: ContainerPort in deployment manifest
         run: |
-          #sed -i "s|image: rajeshnimmana/dockerbuild:.*|image: rajeshnimmana/dockerbuild:${{ env.VERSION }}|" argocd-example-apps/${{ env.ENVIRONMENT }}/deploy.yaml
            sed -i "s/containerPort: [0-9]\+/containerPort: $ContainerPort/" argocd-example-apps/$ENVIRONMENT/deploy.yaml
-
+           ## Change nodePort in service YAML (optional, only if applicable)
+           sed -i "sed -i "s/nodePort: [0-9]\+/nodePort: $NODEPORT/" argocd-example-apps/$ENVIRONMENT/service.yaml
+          #This command replaces the existing nodePort value in the service.yaml file with a new one stored in the $NODEPORT variable.
+          # "s/.../.../" This is a substitute command:
+          # s/OLD/NEW/It searches for a pattern (OLD) and replaces it with (NEW).
+          # [0-9]\+ → matches one or more digits (like 30009, 32000, etc.).
       # Commit and push updated manifest
       - name: Commit and push deployment update
         run: |
@@ -42,8 +52,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/satishnaga1/argocd-example-apps.git
-          git add ${{ env.ENVIRONMENT }}/deploy.yaml
-          git commit -m "Change containerPort to $ContainerPort in $ENVIRONMENT"
+          git add ${{ env.ENVIRONMENT }}/deploy.yaml ${{ env.ENVIRONMENT}}/service.yaml
+          git commit -m "Change containerPort to $ContainerPort and nodePort to $NODEPORT in $ENVIRONMENT"
           git push
         env:
           TOKEN: ${{ secrets.TOKEN }}
