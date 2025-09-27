@@ -5,7 +5,7 @@ on:
       environment:
         description: 'Target environment'
         required: true
-        default: 'dev'
+        default: " " 
         type: choice
         options:
           - dev
