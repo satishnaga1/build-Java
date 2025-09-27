@@ -1,9 +1,18 @@
 # Use stable UBI8 base image
 FROM registry.access.redhat.com/ubi8/ubi
 
-# Install Python 3 and pip
-RUN dnf install -y python3 python3-pip && \
-    dnf clean all
+# Install Python 3, pip, and required build dependencies
+RUN dnf install -y \
+    python3 \
+    python3-pip \
+    python3-devel \
+    gcc \
+    gcc-c++ \
+    make \
+    redhat-rpm-config \
+    openssl-devel \
+    libffi-devel \
+    && dnf clean all
 
 # Set working directory
 WORKDIR /app
