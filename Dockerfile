@@ -21,9 +21,10 @@ WORKDIR /app
 COPY . .
 
 # Install Python dependencies
+RUN pip3 install --upgrade pip setuptools wheel
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Expose port (uncomment if needed)
+# Expose port (optional)
 # EXPOSE 5000
 
 # Run the app
