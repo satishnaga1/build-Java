@@ -22,7 +22,8 @@
     async function deploy() {
       const env = document.getElementById("env").value;
 
-      const token = prompt("Enter your GitHub Token:");
+      // ❌ Do NOT do this with a real token in production.
+      const token = "YOUR_TOKEN_HERE";
 
       const res = await fetch(
         "https://api.github.com/repos/satishnaga1/build-Java/actions/workflows/CI%26CD.yml/dispatches",
