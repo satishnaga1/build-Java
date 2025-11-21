@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trigger Deployment</title>
+</head>
+<body>
+  <h2>Trigger Deployment</h2>
+
+  <label>Choose Environment:</label>
+  <select id="env">
+    <option value="dev">Dev</option>
+    <option value="prod">Prod</option>
+  </select>
+
+  <br><br>
+
+  <button onclick="deploy()">Deploy</button>
+
+  <p id="msg"></p>
+
+  <script>
+    async function deploy() {
+      const env = document.getElementById("env").value;
+
+      const token = prompt("Enter your GitHub Token:");
+
+      const res = await fetch(
+        "https://api.github.com/repos/satishnaga1/build-Java/actions/workflows/CI%26CD.yml/dispatches",
+        {
+          method: "POST",
+          headers: {
+            "Accept": "application/vnd.github+json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            ref: "main",
+            inputs: { environment: env }
+          })
+        }
+      );
+
+      document.getElementById("msg").textContent =
+        res.ok ? "Deployment started!" : "Error triggering deployment";
+    }
+  </script>
+
+</body>
+</html>
