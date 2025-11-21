@@ -1,0 +1,19 @@
+name: Public Trigger
+
+on:
+  repository_dispatch:
+    types: [deploy]
+
+jobs:
+  call-main-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call the CI/CD workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: CI&CD.yml
+          repo: satishnaga1/build-Java
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            environment=dev
